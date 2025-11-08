@@ -3,14 +3,13 @@
 #include <string.h>
 #include <ctype.h>
 typedef struct WordNode {
-	char* word;
+	char word;
 	struct WordNode* next;
 } WordNode;
 
-WordNode* create_node(const char* word) {
+WordNode* create_node(char word) {
 	WordNode* new_node = (WordNode*)malloc(sizeof(WordNode));
-	new_node->word = (char*)malloc(strlen(word)+1);
-	strcpy(new_node->word, word);
+	new_node->word = word;
 	new_node->next = NULL;
 	return new_node;
 }
@@ -18,7 +17,7 @@ void print_list(WordNode* head){
 	WordNode* current = head;
 	
 	while (current != NULL) {
-		printf("%s", current->word);
+		printf("%c", current->word);
 		if (current->next != NULL) {
 			printf(" ");
 		}
@@ -26,7 +25,7 @@ void print_list(WordNode* head){
 	}
 	printf("\n");
 }
-void add_to_list(WordNode** head, const char* word) {
+void add_to_list(WordNode** head, char word) {
 	WordNode* new_node = create_node(word);
 	
 	if (*head == NULL) {
@@ -46,20 +45,18 @@ void remove_from_list(WordNode** head) {
 	while (current->next != NULL) {
 		current = current->next;
 	}
-	char* last = current->word;
+	char last = current->word;
 	WordNode* prev = NULL;
 	current = *head;
 
 	while (current != NULL) {
-		if (strcmp(current->word, last) == 0 && current->next != NULL) {
+		if (((current->word) == last)  && (current->next != NULL)) {
 			if (prev == NULL) {
 				*head = current->next;
-				free(current->word);
 				free(current);
 				current = *head;
 			} else {
 				prev->next = current->next;
-				free(current->word);
 				free(current);
 				current = prev->next;
 			}
@@ -69,23 +66,20 @@ void remove_from_list(WordNode** head) {
 		}
 	}
 }
+
+// abcdledfnasn...
 int main() {
-	char str[100];
+	char c;
 	WordNode* wordlist = NULL;
-	scanf("%99[^\n]",str);
-	char* t = strtok(str, "\t");
-	while (t != NULL) {
-		add_to_list(&wordlist,t);
-		t = strtok(NULL, "\t");
+	while ( (c = getchar()) != '.') {
+		add_to_list(&wordlist,c);
 	}
 	remove_from_list(&wordlist);
 	print_list(wordlist);
-
 	WordNode* current = wordlist;
 	while (current != NULL) {
 		WordNode* temp = current;
 		current = current->next;
-		free(temp->word);
 		free(temp);
 	}
 	return 0;
